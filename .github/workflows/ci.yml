@@ -1,0 +1,86 @@
+# =================================================================
+# CI/CD pipeline (GitHub Actions)
+#   On every push / pull request:
+#     1. backend  - install, run all tests against real Postgres + Redis
+#     2. frontend - install and build
+#     3. docker   - build both images (only after 1 and 2 pass)
+#   On push to "main" the images can be pushed to AWS ECR
+#   (uncomment the last steps and add the secrets in GitHub settings).
+# =================================================================
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: fleet
+          POSTGRES_PASSWORD: fleet
+          POSTGRES_DB: fleet360_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U fleet" --health-interval 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      TEST_DATABASE_URL: postgres://fleet:fleet@localhost:5432/fleet360_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  docker:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -t fleet360-backend:${{ github.sha }} ./backend
+      - name: Build frontend image
+        run: docker build -t fleet360-frontend:${{ github.sha }} ./frontend
+
+      # ---- Deploy to AWS (enable when the AWS account is ready) ----
+      # - uses: aws-actions/configure-aws-credentials@v4
+      #   if: github.ref == 'refs/heads/main'
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ap-south-1
+      # - uses: aws-actions/amazon-ecr-login@v2
+      #   if: github.ref == 'refs/heads/main'
+      # - name: Push images to ECR
+      #   if: github.ref == 'refs/heads/main'
+      #   run: |
+      #     REG=${{ secrets.ECR_REGISTRY }}
+      #     docker tag fleet360-backend:${{ github.sha }}  $REG/fleet360-backend:latest
+      #     docker tag fleet360-frontend:${{ github.sha }} $REG/fleet360-frontend:latest
+      #     docker push $REG/fleet360-backend:latest
+      #     docker push $REG/fleet360-frontend:latest
