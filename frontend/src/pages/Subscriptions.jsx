@@ -220,11 +220,11 @@ export default function Subscriptions() {
 
   const actions = (s) => (
     <div className="actions">
-      <button className="btn btn-sm" title="Renewal history" onClick={() => setHistory(s.id)}><History size={14} /></button>
+      <button className="btn btn-icon" title="Renewal history" aria-label="Renewal history" onClick={() => setHistory(s.id)}><History size={15} /></button>
       {canManage && s.computed_status !== 'CANCELLED' && <>
         <button className="btn btn-sm btn-primary" onClick={() => setRenewing(s)}><RefreshCw size={13} /> Renew</button>
-        <button className="btn btn-sm" title="Edit" onClick={() => setEditing(s)}><Pencil size={14} /></button>
-        <button className="btn btn-sm btn-danger" title="Cancel" onClick={() => cancel(s)}><XCircle size={14} /></button>
+        <button className="btn btn-icon" title="Edit" aria-label="Edit subscription" onClick={() => setEditing(s)}><Pencil size={15} /></button>
+        <button className="btn btn-icon danger" title="Cancel subscription" aria-label="Cancel subscription" onClick={() => cancel(s)}><XCircle size={15} /></button>
       </>}
     </div>
   );
@@ -282,7 +282,7 @@ export default function Subscriptions() {
                     <td><b>{s.customer_name}</b><div className="small muted">{s.customer_email}</div></td>
                     <td>{s.plan_name}<div className="small muted">{formatINR(s.price_monthly)}/month</div></td>
                     <td>{formatNumber(s.active_users)}</td>
-                    <td className="small">{formatDate(s.start_date)} → {formatDate(s.end_date)}</td>
+                    <td className="small nowrap">{formatDate(s.start_date)} → {formatDate(s.end_date)}</td>
                     <td>{daysLeftText(s)}</td>
                     <td><StatusBadge value={s.computed_status} /></td>
                     <td>{actions(s)}</td>

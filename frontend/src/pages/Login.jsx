@@ -9,7 +9,7 @@ import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-route
 import { Eye, EyeOff, LogIn, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { errorMessage } from '../api/client';
-import { BrandMark, Truck } from '../components/Artwork';
+import { BrandMark, Truck, TruckDefs } from '../components/Artwork';
 
 export default function Login() {
   const { user, login } = useAuth();
@@ -42,7 +42,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <section className="login-art">
-        <div style={{ textAlign: 'left' }}>
+        <div style={{ display: 'inline-block', textAlign: 'center', alignSelf: 'flex-start' }}>
           <BrandMark width={130} />
           <div className="brand-name" style={{ marginTop: 4 }}>TTC Fleet<span style={{ color: '#f97316' }}>360</span></div>
           <div className="brand-sub">Logistics &amp; Fleet Management</div>
@@ -52,12 +52,8 @@ export default function Login() {
           <p>One place for your users, branches, subscriptions and every action taken in the system.</p>
         </div>
         <svg viewBox="0 0 420 180" style={{ width: '80%', maxWidth: 460 }} aria-hidden="true">
-          <defs>
-            <linearGradient id="trailerGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#fff" /><stop offset="1" stopColor="#dfe5ee" /></linearGradient>
-            <linearGradient id="cabGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff9a3c" /><stop offset="1" stopColor="#ea580c" /></linearGradient>
-            <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#1e293b" /><stop offset="1" stopColor="#475569" /></linearGradient>
-          </defs>
-          <Truck x={10} y={10} s={1} />
+          <defs><TruckDefs idp="login" /></defs>
+          <Truck x={10} y={10} s={1} idp="login" />
         </svg>
       </section>
 

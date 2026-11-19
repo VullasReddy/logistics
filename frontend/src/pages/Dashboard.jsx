@@ -119,8 +119,8 @@ export default function Dashboard() {
               {/* scale is at least 0-100, and grows if trips go above 100 */}
               <YAxis tickLine={false} axisLine={false} domain={[0, (max) => Math.max(100, Math.ceil(max / 25) * 25)]} tickCount={5} />
               <Tooltip />
-              <Area type="linear" dataKey="total_trips" name="Total Trips" stroke={ORANGE} strokeWidth={2.5} fill="url(#gTrips)" dot={{ r: 4, fill: ORANGE }} />
-              <Area type="linear" dataKey="on_time_trips" name="On Time Delivery" stroke={BLUE} strokeWidth={2.5} fill="url(#gOnTime)" dot={{ r: 4, fill: BLUE }} />
+              <Area type="linear" dataKey="total_trips" name="Total Trips" stroke={ORANGE} strokeWidth={2.5} fill="url(#gTrips)" dot={{ r: 4, fill: ORANGE }} isAnimationActive={false} />
+              <Area type="linear" dataKey="on_time_trips" name="On Time Delivery" stroke={BLUE} strokeWidth={2.5} fill="url(#gOnTime)" dot={{ r: 4, fill: BLUE }} isAnimationActive={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

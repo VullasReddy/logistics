@@ -185,18 +185,19 @@ export default function Users() {
                         <div><b>{u.full_name}</b><div className="small muted">{u.email}</div></div>
                       </div>
                     </td>
-                    <td>{u.phone || '—'}</td>
+                    <td className="nowrap">{u.phone || '—'}</td>
                     <td><Badge tone="purple">{u.role_name}</Badge></td>
                     <td>{u.branch_name || <span className="muted">Head office</span>}</td>
                     <td>{u.is_active ? <Badge tone="success">Active</Badge> : <Badge tone="gray">Inactive</Badge>}</td>
-                    <td className="small muted">{formatDateTime(u.last_login_at)}</td>
+                    <td className="small muted nowrap">{u.last_login_at ? formatDateTime(u.last_login_at) : 'Never'}</td>
                     <td>
                       <div className="actions">
-                        {can('USER_UPDATE') && <button className="btn btn-sm" title="Edit" onClick={() => setEditing(u)}><Pencil size={14} /></button>}
-                        {can('USER_UPDATE') && <button className="btn btn-sm" title="Reset password" onClick={() => resetPassword(u)}><KeyRound size={14} /></button>}
+                        {can('USER_UPDATE') && <button className="btn btn-icon" title="Edit user" aria-label="Edit user" onClick={() => setEditing(u)}><Pencil size={15} /></button>}
+                        {can('USER_UPDATE') && <button className="btn btn-icon" title="Reset password" aria-label="Reset password" onClick={() => resetPassword(u)}><KeyRound size={15} /></button>}
                         {can('USER_STATUS') && u.id !== me.id && (
-                          <button className={`btn btn-sm ${u.is_active ? 'btn-danger' : ''}`} title={u.is_active ? 'Deactivate' : 'Activate'} onClick={() => toggleStatus(u)}>
-                            <Power size={14} /> {u.is_active ? 'Deactivate' : 'Activate'}
+                          <button className={`btn btn-icon ${u.is_active ? 'danger' : 'success'}`} title={u.is_active ? 'Deactivate' : 'Activate'}
+                            aria-label={u.is_active ? 'Deactivate user' : 'Activate user'} onClick={() => toggleStatus(u)}>
+                            <Power size={15} />
                           </button>
                         )}
                       </div>

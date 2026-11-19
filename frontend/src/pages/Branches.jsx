@@ -260,14 +260,14 @@ export default function Branches() {
                   <tr key={b.id}>
                     <td><div className="cell-user"><span className="avatar" style={{ background: '#ffedd5', color: '#ea580c' }}><Building2 size={16} /></span><b>{b.name}</b></div></td>
                     <td><code>{b.code}</code></td>
-                    <td><MapPin size={13} /> {b.city}, {b.state}</td>
+                    <td className="nowrap"><MapPin size={13} /> {b.city}, {b.state}</td>
                     <td>{b.user_count}</td>
                     <td>{b.location_count}</td>
                     <td><StatusBadge value={b.status} /></td>
                     <td>
                       <div className="actions">
                         <button className="btn btn-sm" onClick={() => setManaging(b.id)}>Manage</button>
-                        {canManage && <button className="btn btn-sm" onClick={() => setEditing(b)}><Pencil size={14} /></button>}
+                        {canManage && <button className="btn btn-icon" title="Edit branch" aria-label="Edit branch" onClick={() => setEditing(b)}><Pencil size={15} /></button>}
                         {canManage && <Switch checked={b.status === 'ACTIVE'} onChange={() => toggleStatus(b)} />}
                       </div>
                     </td>

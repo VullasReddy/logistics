@@ -10,6 +10,14 @@
  *   <PromoArt />    small scene for the sidebar promo card
  */
 
+import { useId } from 'react';
+
+/*
+ * Each drawing gets its own gradient ids (via useId). If two pictures shared
+ * the same id and the first one was hidden with display:none, the browser
+ * would lose the colours in the second one.
+ */
+
 export function BrandMark({ width = 150 }) {
   return (
     <svg className="brand-mark" width={width} viewBox="0 0 150 42" aria-hidden="true">
@@ -26,20 +34,20 @@ export function BrandMark({ width = 150 }) {
 }
 
 /** Side view truck. `x`, `y` place it; `s` scales it. Drawn facing left. */
-export function Truck({ x = 0, y = 0, s = 1 }) {
+export function Truck({ x = 0, y = 0, s = 1, idp = 't' }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
       {/* shadow */}
       <ellipse cx="190" cy="152" rx="200" ry="10" fill="#000" opacity="0.35" />
       {/* trailer */}
-      <rect x="110" y="10" width="280" height="118" rx="6" fill="url(#trailerGrad)" />
+      <rect x="110" y="10" width="280" height="118" rx="6" fill={`url(#${idp}trailer)`} />
       <g stroke="#cbd5e1" strokeWidth="1.5">
         {[150, 190, 230, 270, 310, 350].map((lx) => <line key={lx} x1={lx} y1="14" x2={lx} y2="124" />)}
       </g>
       <rect x="110" y="122" width="280" height="10" fill="#475569" />
       {/* cab */}
-      <path d="M8 132 V64 Q8 40 30 34 L84 22 Q104 20 108 40 V132 Z" fill="url(#cabGrad)" />
-      <path d="M22 66 V50 Q24 42 34 40 L80 31 Q94 30 94 44 V66 Z" fill="url(#glassGrad)" />
+      <path d="M8 132 V64 Q8 40 30 34 L84 22 Q104 20 108 40 V132 Z" fill={`url(#${idp}cab)`} />
+      <path d="M22 66 V50 Q24 42 34 40 L80 31 Q94 30 94 44 V66 Z" fill={`url(#${idp}glass)`} />
       <rect x="8" y="82" width="100" height="6" fill="#c2410c" opacity="0.5" />
       <rect x="0" y="96" width="34" height="26" rx="3" fill="#1f2937" />
       {[100, 106, 112, 118].map((gy) => <line key={gy} x1="3" y1={gy} x2="31" y2={gy} stroke="#6b7280" strokeWidth="2" />)}
@@ -58,16 +66,16 @@ export function Truck({ x = 0, y = 0, s = 1 }) {
 }
 
 /** Shared gradients used by <Truck>. Put once inside each <svg> that draws a truck. */
-function TruckDefs() {
+export function TruckDefs({ idp = 't' }) {
   return (
     <>
-      <linearGradient id="trailerGrad" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id={`${idp}trailer`} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#dfe5ee" />
       </linearGradient>
-      <linearGradient id="cabGrad" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient id={`${idp}cab`} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#ff9a3c" /><stop offset="1" stopColor="#ea580c" />
       </linearGradient>
-      <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id={`${idp}glass`} x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stopColor="#1e293b" /><stop offset="1" stopColor="#475569" />
       </linearGradient>
     </>
@@ -127,10 +135,11 @@ function Pin({ x, y, s = 1 }) {
 }
 
 export function HeroArt() {
+  const idp = useId().replace(/:/g, '');
   return (
     <svg className="hero-art" viewBox="0 0 900 380" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
       <defs>
-        <TruckDefs />
+        <TruckDefs idp={idp} />
         <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#c9d8f0" />
           <stop offset="0.55" stopColor="#f6c9a0" />
@@ -166,7 +175,7 @@ export function HeroArt() {
         <path d="M180 330 C400 310, 650 312, 900 300" stroke="#f97316" strokeWidth="3" fill="none" opacity="0.8" />
         <path d="M200 350 C430 330, 680 334, 900 322" stroke="#fbbf24" strokeWidth="2" fill="none" opacity="0.5" />
         {/* the "360" ring around the truck */}
-        <ellipse cx="610" cy="300" rx="290" ry="58" fill="none" stroke="#f97316" strokeWidth="7" opacity="0.9" />
+        <ellipse cx="625" cy="306" rx="250" ry="50" fill="none" stroke="#f97316" strokeWidth="7" opacity="0.9" />
         {/* dashed route between pins */}
         <path d="M380 120 Q560 40 720 130" fill="none" stroke="#f97316" strokeWidth="2.5" strokeDasharray="6 7" />
         <Pin x={380} y={136} s={1} />
@@ -178,8 +187,8 @@ export function HeroArt() {
           <path d="M28 2 L18 22 L26 22 L42 2 Z" />
           <path d="M60 -2 L66 -12 L70 -12 L68 -2 Z" />
         </g>
-        <Truck x={430} y={170} s={0.95} />
-        <text x="640" y="330" fontSize="64" fontWeight="900" fontStyle="italic" fill="#ffffff"
+        <Truck x={470} y={196} s={0.78} idp={idp} />
+        <text x="660" y="334" fontSize="54" fontWeight="900" fontStyle="italic" fill="#ffffff"
           stroke="#f97316" strokeWidth="1.5" fontFamily="Inter, sans-serif">360°</text>
       </g>
     </svg>
@@ -187,23 +196,25 @@ export function HeroArt() {
 }
 
 export function PromoArt() {
+  const idp = useId().replace(/:/g, '');
   return (
     <svg className="promo-art" viewBox="0 0 220 130" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><TruckDefs /></defs>
+      <defs><TruckDefs idp={idp} /></defs>
       <rect width="220" height="130" fill="#31476f" />
       <rect width="220" height="70" fill="#f59e5b" opacity="0.35" />
       <Skyline baseY={100} color="#22355c" seed={5} windows />
       <rect y="100" width="220" height="30" fill="#0d1a38" />
-      <Truck x={52} y={52} s={0.32} />
+      <Truck x={52} y={52} s={0.32} idp={idp} />
     </svg>
   );
 }
 
 export function PromoTruck() {
+  const idp = useId().replace(/:/g, '');
   return (
     <svg className="promo-truck" viewBox="0 0 400 170" aria-hidden="true">
-      <defs><TruckDefs /></defs>
-      <Truck x={10} y={10} s={0.95} />
+      <defs><TruckDefs idp={idp} /></defs>
+      <Truck x={10} y={10} s={0.95} idp={idp} />
     </svg>
   );
 }
